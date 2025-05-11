@@ -13,11 +13,18 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "mongodb": "^6.16.0",
     "morgan": "^1.10.0",
     "uuid": "^11.1.0",
     "ws": "^8.18.2"
   },
-  "trustedDependencies": []
+  "trustedDependencies": ["bcrypt"],
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "eslint": "^9.26.0",
+    "globals": "^16.1.0"
+  }
 }
