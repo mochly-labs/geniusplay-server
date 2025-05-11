@@ -6,6 +6,18 @@ function send(type, data) {
   ws.send(JSON.stringify({ type, ...data }));
 }
 
+ws.onclose = () => {
+  // eslint-disable-next-line no-undef
+  Swal.fire({
+    title: "Conexão perdida!",
+    icon: "error",
+    text: "Reconectando...",
+  });
+  setTimeout(() => {
+    window.location.reload();
+  }, 1000);
+};
+
 function showTab(tabName) {
   document.getElementById("loginForm").classList.add("hidden");
   document.getElementById("registerForm").classList.add("hidden");
