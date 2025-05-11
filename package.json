@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "npm install bcrypt && bun i && bun pm trust --all || true",
+    "setup": "npm i bcrypt && bun i && bun pm trust --all|| true",
     "dev": "nodemon index.js"
   },
   "keywords": [],
@@ -13,6 +13,7 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
@@ -21,9 +22,7 @@
     "uuid": "^11.1.0",
     "ws": "^8.18.2"
   },
-  "trustedDependencies": [
-    "bcrypt"
-  ],
+  "trustedDependencies": ["bcrypt"],
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "eslint": "^9.26.0",
