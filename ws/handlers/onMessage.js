@@ -138,7 +138,8 @@ async function onMessage(ws, uuid, msg) {
     auth.setUsername(uuid, user.username);
     let institution = await institutions.findOne({ id: user.institution });
     let institutionName = institution ? institution.full_name : "None";
-    let institutionShortname = institution ? institution.name : "None";
+    let institutionShortname = institution ? institution.short_name : "None";
+    console.log("Debug:", institution);
     ws.send(
       JSON.stringify({
         success: true,

@@ -14,6 +14,12 @@ function onConnection(ws, req) {
 
   console.log(`[WS] Client connected: ${clientIp} (UUID: ${uuid})`);
   ws.send(JSON.stringify({ type: "uuid", uuid }));
+  ws.send(
+    JSON.stringify({
+      type: "version",
+      version: require("../package.json").version,
+    })
+  );
 
   const keepAliveInterval = sendKeepAlive(ws);
 

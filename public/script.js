@@ -1,4 +1,4 @@
-const ws = new WebSocket("wss://geniusplay-server.onrender.com"); // Change to your actual WS URL
+const ws = new WebSocket("wss://geniusplay-server.onrender.com");
 let turnstileToken = null;
 
 function send(type, data) {
@@ -54,25 +54,44 @@ document.getElementById("registerForm").addEventListener("submit", (e) => {
   send("register", { username, password, name, email, turnstileToken });
 });
 
+// eslint-disable-next-line no-unused-vars
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text);
+  // eslint-disable-next-line no-undef
+  Swal.fire({
+    title: "Código de convite copiado!",
+    icon: "success",
+  });
+}
+
 ws.onmessage = (event) => {
   const data = JSON.parse(event.data);
-  console.log(event)
+  console.log(event);
   if (data.type === "error") {
     alert(data.message);
   } else if (data.type === "auth") {
-    document.querySelector(".login").classList.add("hidden");
-    document.querySelector(".dashboard").classList.remove("hidden");
-    document.getElementById("username").textContent = data.user.name;
-    if (data.user.institution) {
-      document.querySelector(".criar-instituicao").classList.add("hidden");
-      document.querySelector(".instituicao").classList.remove("hidden");
-      document.getElementById("institution-name").textContent =
-        data.user.institutionName;
-      document.getElementById("institution-shortname").textContent =
-        " (" + data.user.institutionShortname + ")";
+    if (data.success) {
+      document.querySelector(".login").classList.add("hidden");
+      document.querySelector(".dashboard").classList.remove("hidden");
+      document.getElementById("username").textContent = data.user.name;
+      if (data.user.institution) {
+        document.querySelector(".criar-instituicao").classList.add("hidden");
+        document.querySelector(".instituicao").classList.remove("hidden");
+        document.getElementById("institution-name").textContent =
+          data.user.institutionName;
+        document.getElementById("institution-shortname").textContent =
+          " (" + data.user.institutionShortname + ")";
+      } else {
+        document.querySelector(".criar-instituicao").classList.remove("hidden");
+        document.querySelector(".instituicao").classList.add("hidden");
+      }
     } else {
-      document.querySelector(".criar-instituicao").classList.remove("hidden");
-      document.querySelector(".instituicao").classList.add("hidden");
+      // eslint-disable-next-line no-undef
+      Swal.fire({
+        title: "Erro ao fazer login!",
+        icon: "error",
+        text: data.error,
+      });
     }
   } else if (data.type === "set-institution") {
     if (data.success && data.institution) {
@@ -98,6 +117,25 @@ ws.onmessage = (event) => {
         text: data.error,
       });
     }
+  } else if (data.type === "create-institution") {
+    if (data.success) {
+      document.querySelector(".criar-instituicao").classList.add("hidden");
+      document.querySelector(".instituicao").classList.remove("hidden");
+      document.getElementById("institution-name").textContent =
+        document.getElementById("name").value;
+      document.getElementById("institution-shortname").textContent =
+        " (" + document.getElementById("shortname").value + ")";
+      // eslint-disable-next-line no-undef
+      Swal.fire({
+        title: "Instituição criada com sucesso!",
+        icon: "success",
+        text: "Agora você pode fazer login!",
+          footer: `Código de convite: [<button class="text-gray-300" onclick="copyToClipboard('${data.invite}')">${data.invite}</button>]`,
+      });
+    } else {
+      document.querySelector(".criar-instituicao").classList.remove("hidden");
+      document.querySelector(".instituicao").classList.add("hidden");
+    }
   }
 };
 
@@ -112,14 +150,16 @@ document.getElementById("join-institution").addEventListener("submit", (e) => {
   send("set-institution", { institution: invite });
 });
 
-document.getElementById("create-institution").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const name = document.getElementById("name").value;
-  const short_name = document.getElementById("shortname").value;
-  const invite = document.getElementById("invite").value;
+document
+  .getElementById("create-institution")
+  .addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const short_name = document.getElementById("shortname").value;
+    const invite = document.getElementById("invite").value;
 
-  send("create-institution", { full_name: name, short_name, invite });
-});
+    send("create-institution", { full_name: name, short_name, invite });
+  });
 
 // eslint-disable-next-line no-unused-vars
 function turnstileResponse(token) {
