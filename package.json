@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "bun i && bun pm trust --all || true",
+    "setup": "npm install bcrypt && bun i && bun pm trust --all || true",
     "dev": "nodemon index.js"
   },
   "keywords": [],
@@ -21,7 +21,9 @@
     "uuid": "^11.1.0",
     "ws": "^8.18.2"
   },
-  "trustedDependencies": ["bcrypt"],
+  "trustedDependencies": [
+    "bcrypt"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.26.0",
     "eslint": "^9.26.0",
