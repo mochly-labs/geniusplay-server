@@ -15,17 +15,18 @@ async function onConnection(ws, req) {
   console.log(`[WS] Client connected: ${clientIp} (UUID: ${uuid})`);
   ws.send(JSON.stringify({ type: "uuid", uuid }));
   
+
+  const keepAliveInterval = sendKeepAlive(ws);
+
+  ws.on("message", (msg) => onMessage(ws, uuid, msg));
+  ws.on("close", () => onClose(uuid, keepAliveInterval));
+  
   ws.send(
     JSON.stringify({
       type: "version",
       version: await getPrettyVersion(),
     })
   );
-
-  const keepAliveInterval = sendKeepAlive(ws);
-
-  ws.on("message", (msg) => onMessage(ws, uuid, msg));
-  ws.on("close", () => onClose(uuid, keepAliveInterval));
 }
 
 module.exports = { onConnection };
