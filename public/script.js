@@ -1,4 +1,4 @@
-const ws = new WebSocket("ws://localhost:3000"); // Change to your actual WS URL
+const ws = new WebSocket("wss://geniusplay-server.onrender.com"); // Change to your actual WS URL
 let turnstileToken = null;
 
 function send(type, data) {
