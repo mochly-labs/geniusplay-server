@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "setup": "bun i && bun pm trust --all",
+    "setup": "bun i && bun pm trust --all || true",
     "dev": "nodemon index.js"
   },
   "keywords": [],
