@@ -2,9 +2,8 @@ const axios = require("axios");
 
 let cachedVersion = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
-// eslint-disable-next-line no-undef
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
 /**
@@ -29,28 +28,40 @@ async function getPrettyVersion() {
 
   try {
     const headers = {
-      "User-Agent": "axios",
-      ...(GITHUB_TOKEN && { Authorization: `token ${GITHUB_TOKEN}` }),
+      "Accept": "application/vnd.github+json",
+      "User-Agent": "GeniusPlay-Version-Fetcher",
+      ...(GITHUB_TOKEN && { Authorization: `Bearer ${GITHUB_TOKEN}` }),
+      "X-GitHub-Api-Version": "2022-11-28",
     };
 
+    // Parallel fetch: latest release + file content
     const [releaseRes, typeRes] = await Promise.all([
       axios.get(
         "https://api.github.com/repos/mochly-labs/genius-play/releases/latest",
         { headers }
       ),
       axios.get(
-        "https://raw.githubusercontent.com/mochly-labs/genius-play/main/type.txt"
+        "https://api.github.com/repos/mochly-labs/genius-play/contents/type.txt",
+        { headers }
       ),
     ]);
 
     const version = releaseRes.data.tag_name;
-    const type = capitalize(typeRes.data.trim());
+
+    const typeContent = Buffer.from(typeRes.data.content, "base64")
+      .toString("utf-8")
+      .trim();
+    const type = capitalize(typeContent);
+
     cachedVersion = `${type} ${version}`;
     cacheTimestamp = now;
 
     return cachedVersion;
   } catch (err) {
-    console.error("Error fetching version info:", err.message);
+    console.error(
+      "Error fetching version info:",
+      err.response?.data || err.message
+    );
     return null;
   }
 }
