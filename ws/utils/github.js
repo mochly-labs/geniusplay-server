@@ -4,6 +4,9 @@ let cachedVersion = null;
 let cacheTimestamp = 0;
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes in milliseconds
 
+// eslint-disable-next-line no-undef
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
 /**
  * Capitalizes the first letter of a string
  * @param {string} str
@@ -25,12 +28,15 @@ async function getPrettyVersion() {
   }
 
   try {
+    const headers = {
+      "User-Agent": "axios",
+      ...(GITHUB_TOKEN && { Authorization: `token ${GITHUB_TOKEN}` }),
+    };
+
     const [releaseRes, typeRes] = await Promise.all([
       axios.get(
         "https://api.github.com/repos/mochly-labs/genius-play/releases/latest",
-        {
-          headers: { "User-Agent": "axios" },
-        }
+        { headers }
       ),
       axios.get(
         "https://raw.githubusercontent.com/mochly-labs/genius-play/main/type.txt"
