@@ -11,6 +11,7 @@ const server = http.createServer(app);
 
 app.use(express.json());
 app.use(morgan("combined"));
+// eslint-disable-next-line no-undef
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", routes);
@@ -21,6 +22,7 @@ app.use((req, res) => {
 
 setupWebSocket(server);
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`✅ Server is running on http://localhost:${PORT}`);

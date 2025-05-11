@@ -4,8 +4,8 @@ const { onMessage } = require("./onMessage");
 const { onClose } = require("./onClose");
 const { sendKeepAlive } = require("./sendKeepAlive");
 const auth = require("../utils/auth");
-
-function onConnection(ws, req) {
+const { getPrettyVersion } = require("../utils/github");
+async function onConnection(ws, req) {
   const remoteip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const uuid = uuidv4();
   auth.setIp(uuid, remoteip);
@@ -14,10 +14,11 @@ function onConnection(ws, req) {
 
   console.log(`[WS] Client connected: ${clientIp} (UUID: ${uuid})`);
   ws.send(JSON.stringify({ type: "uuid", uuid }));
+  
   ws.send(
     JSON.stringify({
       type: "version",
-      version: require("../package.json").version,
+      version: await getPrettyVersion(),
     })
   );
 
