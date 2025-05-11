@@ -4,7 +4,7 @@ const { onMessage } = require("./onMessage");
 const { onClose } = require("./onClose");
 const { sendKeepAlive } = require("./sendKeepAlive");
 const auth = require("../utils/auth");
-const { getPrettyVersion } = require("../utils/github");
+const getPrettyVersion = require("../utils/github");
 async function onConnection(ws, req) {
   const remoteip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
   const uuid = uuidv4();
